@@ -69,8 +69,8 @@
                             ?>
 
                         </td>
-                        <td><a href="" class="fa fa-edit"></a></td>
-                        <td><a href="" class="fa fa-trash"></a></td>
+                        <td><a href="update-user.php?userId=<?php echo $userId?>" class="fa fa-edit"></a></td>
+                        <td><a href="delete-user.php?id=<?php echo $userId?>"onclick="return confirm('Are you sure to delete this...')" class="fa fa-trash"></a></td>
 
                     </tr>
                     <?php } ?>
