@@ -14,7 +14,11 @@
             <div class="col-md-12">
                 <?php
                 require 'config.php';
-                $query = "SELECT * FROM users ORDER BY user_id DESC ";
+                $limit=3;
+                $page=$_GET['page'];
+                $offset=($page-1)*$limit;
+                $SI_start=$offset;
+                $query = "SELECT * FROM users ORDER BY user_id DESC LIMIT {$offset},{$limit}";
                 $result = mysqli_query($con, $query);
                 $count = mysqli_num_rows($result);
                 $SiCount=0;
@@ -50,7 +54,7 @@
                     ?>
                     <tr>
 
-                        <td><?php echo $SiCount?></td>
+                        <td><?php echo $SiCount+$SI_start?></td>
                         <td><?php echo $userId?></td>
                         <td><?php echo $first_name.' '.$last_name?></td>
                        <!-- <td><?php /*echo $password*/?></td>-->
@@ -79,8 +83,37 @@
                 }
                 ?>
                 </table>
+                <?php
+                require 'config.php';
+                $pagiQuery="SELECT * FROM users";
+                $pagiResult=mysqli_query($con,$pagiQuery);
+                if(mysqli_num_rows($pagiResult))
+                {
+                    $totalRecord=mysqli_num_rows($pagiResult);
+                    $totalPage=ceil($totalRecord/$limit);
+                    echo '<ul class="pagination admin-pagination">';
+                    if($page>1)
+                    {
+                        echo '  <li class=""><a href="users.php?page='.($page-1).'">prev</a></li>';
+                    }
+                    for($i=1; $i<=$totalPage;$i++)
+                    {
+                        if($page==$i){
+                            $active="active";
+                        }else
+                        {
+                            $active='';
+                        }
+                        echo ' <li class='.$active.'><a href="users.php?page='.$i.'">'.$i.'</a></li>';
+                    }
+                    if($totalPage>$page)
+                    {
+                        echo '  <li class=""><a href="users.php?page='.($page+1).'">next</a></li>';
+                    }
 
-
+                    echo ' </ul>';
+                }
+                ?>
             </div>
         </div>
     </div>
