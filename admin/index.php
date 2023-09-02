@@ -1,3 +1,11 @@
+<?php
+session_start();
+if(isset($_SESSION['username']))
+    {
+        header("location:post.php");
+    }
+?>
+
 <!doctype html>
 <html>
 <head>

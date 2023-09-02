@@ -1,4 +1,11 @@
-<?php include "header.php"; ?>
+<?php include "header.php";
+
+if(!isset($_SESSION['user_role'])=='1')
+{
+    header("location:post.php");
+}
+
+?>
 <div id="admin-content">
     <div class="container">
         <div class="row">
@@ -9,6 +16,22 @@
                 <a class="add-new" href="add-category.php">add category</a>
             </div>
             <div class="col-md-12">
+                <?php
+                require 'config.php';
+                $limit=3;
+                if(isset($_GET['page'])){
+                    $page_number = $_GET['page'];
+                }else{
+                    $page_number = 1;
+                }
+
+                $offset = ($page_number - 1) * $limit;
+                $query = "SELECT * FROM categories ORDER BY category_id DESC";
+                $result = mysqli_query($con, $query);
+                $count = mysqli_num_rows($result);
+                $SiCount=0;
+                if ($count > 0) {
+                ?>
                 <table class="content-table">
                     <thead>
                         <th>S.No.</th>
@@ -18,49 +41,28 @@
                         <th>Delete</th>
                     </thead>
                     <tbody>
+                    <?php
+                    while ($row = mysqli_fetch_assoc($result)) {
+                    $cat_Id=$row['category_id'];
+                    $cat_name=$row['category_name'];
+                    $post_name=$row['post'];
+                    $SiCount++
+
+
+                    ?>
                         <tr>
-                            <td class='id'>1</td>
-                            <td>Html</td>
-                            <td>5</td>
-                            <td class='edit'><a href='update-category.php'><i class='fa fa-edit'></i></a></td>
-                            <td class='delete'><a href='delete-category.php'><i class='fa fa-trash-o'></i></a></td>
+                            <td class='id'><?php echo $SiCount ?></td>
+                            <td><center><?php echo $cat_name?></center></td>
+                            <td><center><?php echo $post_name?></center></td>
+                            <td class='edit'><a href='update-category.php?id=<?php echo  $cat_Id?>'><i class='fa fa-edit'></i></a></td>
+                            <td class='delete'><a onclick="return confirm('Are you sure to delete this...?')" href='delete-category.php?id=<?php echo  $cat_Id?>'><i class='fa fa-trash-o'></i></a></td>
                         </tr>
-                        <tr>
-                            <td class='id'>2</td>
-                            <td>Css</td>
-                            <td>15</td>
-                            <td class='edit'><a href='update-category.php'><i class='fa fa-edit'></i></a></td>
-                            <td class='delete'><a href='delete-category.php'><i class='fa fa-trash-o'></i></a></td>
-                        </tr>
-                        <tr>
-                            <td class='id'>3</td>
-                            <td>Java</td>
-                            <td>8</td>
-                            <td class='edit'><a href='update-category.php'><i class='fa fa-edit'></i></a></td>
-                            <td class='delete'><a href='delete-category.php'><i class='fa fa-trash-o'></i></a></td>
-                        </tr>
-                        <tr>
-                            <td class='id'>4</td>
-                            <td>Php</td>
-                            <td>11</td>
-                            <td class='edit'><a href='update-category.php'><i class='fa fa-edit'></i></a></td>
-                            <td class='delete'><a href='delete-category.php'><i class='fa fa-trash-o'></i></a></td>
-                        </tr>
-                        <tr>
-                            <td class='id'>5</td>
-                            <td>Python</td>
-                            <td>13</td>
-                            <td class='edit'><a href='update-category.php'><i class='fa fa-edit'></i></a></td>
-                            <td class='delete'><a href='delete-category.php'><i class='fa fa-trash-o'></i></a></td>
-                        </tr>
-                        <tr>
-                            <td class='id'>6</td>
-                            <td>Scss</td>
-                            <td>3</td>
-                            <td class='edit'><a href='update-category.php'><i class='fa fa-edit'></i></a></td>
-                            <td class='delete'><a href='delete-category.php'><i class='fa fa-trash-o'></i></a></td>
-                        </tr>
+                    <?php } ?>
+
                     </tbody>
+                    <?Php
+                    }
+                    ?>
                 </table>
                 <ul class='pagination admin-pagination'>
                     <li class="active"><a>1</a></li>
