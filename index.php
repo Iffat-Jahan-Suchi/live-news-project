@@ -7,15 +7,17 @@
                 <div class="post-container">
                     <?php
                     $SI = 0;
-                    $limit=3;
-                    $pageNo=$_GET['page'];
-                    $offset=($pageNo-1)*$limit;
+                    $limit = 3;
+                    if(isset($_GET['page'])){
+                        $page_number = $_GET['page'];
+                    }else{
+                        $page_number = 1;
+                    }
+                    $offset = ($page_number - 1) * $limit;
                     require 'admin/config.php';
                     $query = "SELECT post.post_id,post.description, post.title,post.post_img,post.category,categories.category_name,post.post_date,users.username FROM post LEFT JOIN categories ON post.category=categories.category_id LEFT JOIN users ON post.author=users.user_id ORDER BY post.post_id DESC LIMIT {$offset},{$limit}";
                     $result = mysqli_query($con, $query);
                     $count = mysqli_num_rows($result);
-                    $totalPage=ceil($count/$limit);
-
                     $SiCount = 0;
                     if ($count > 0)
                     {
@@ -33,11 +35,11 @@
                             <div class="post-content">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <a class="post-img" href="single.php"><img src='admin/upload/<?php echo $img?>' alt=""/></a>
+                                        <a class="post-img" href="single.php?id=<?php echo $id;?>"><img src='admin/upload/<?php echo $img?>' alt=""/></a>
                                     </div>
                                     <div class="col-md-8">
                                         <div class="inner-content clearfix">
-                                            <h3><a href='single.php'><?php echo $title?></a></h3>
+                                            <h3><a href='single.php?id=<?php echo $id;?>'><?php echo $title?></a></h3>
                                             <div class="post-information">
                                         <span>
                                             <i class="fa fa-tags" aria-hidden="true"></i>
@@ -53,9 +55,9 @@
                                         </span>
                                             </div>
                                             <p class="description">
-                                             <?php echo $description ?>
+                                             <?php echo substr($description,0,150).'...'?>
                                             </p>
-                                            <a class='read-more pull-right' href='single.php'>read more</a>
+                                            <a class='read-more pull-right' href='single.php?id=<?php echo $id;?>'>read more</a>
                                         </div>
                                     </div>
                                 </div>
@@ -67,12 +69,34 @@
                     }else{
                         echo "no record";
                     }
-                    echo "<ul class='pagination'>";
-                    for($i=1;$i<=$totalPage;$i++)
-                    {
-                        echo '  <li><a href="index.php?page='.$i.'">'.$i.'</a></li>';
+
+
+                    $query2 = "SELECT * FROM post";
+                    $result2 = mysqli_query($con,$query2) or dir("Failed.");
+                    if(mysqli_num_rows($result2)){
+                        $total_records = mysqli_num_rows($result2);
+                        $total_page = ceil($total_records/$limit);
+
+                        echo "<ul class='pagination admin-pagination'>";
+                        if($page_number > 1){
+                            echo '<li><a href="index.php?page='.($page_number-1).'">prev</a></li>';
+                        }
+
+                        for($i = 1; $i <= $total_page; $i++){
+
+                            if($i == $page_number){
+                                $active = "active";
+                            }else{
+                                $active = "";
+                            }
+
+                            echo '<li class='.$active.'><a href="index.php?page='.$i.'">'.$i.'</a></li>';
+                        }
+                        if($total_page > $page_number){
+                            echo '<li><a href="index.php?page='.($page_number+1).'">next</a></li>';
+                        }
+                        echo "</ul>";
                     }
-                    echo "</ul>";
                     ?>
 
 

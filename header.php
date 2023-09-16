@@ -34,11 +34,43 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
+                    <?php
+                    require 'admin/config.php';
+                    if(isset($_GET['cid'])){
+                        $cate_id = $_GET['cid'];
+                    }
+
+                    $query = "SELECT * FROM categories WHERE post>0";
+                    $result = mysqli_query($con, $query);
+                    $count = mysqli_num_rows($result);
+                    $SiCount=0;
+                    if ($count > 0) {
+                        ?>
                 <ul class='menu'>
-                    <li><a href='category.php'>World</a></li>
-                    <li><a href='category.php'>Local News</a></li>
-                    <li><a href='category.php'>Technology</a></li>
-                    <li><a href='category.php'>Science</a></li>
+                    <?php
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        $cat_Id=$row['category_id'];
+                        $cat_name=$row['category_name'];
+                        $post_name=$row['post'];
+                        $SiCount++;
+                        $active='';
+                        if(isset($_GET['cid'])){
+                            if($cat_Id == $cate_id){
+                                $active = 'active';
+                            }else{
+                                $active = '';
+                            }
+                        }
+                    ?>
+                    <?php
+                        echo "<li><a class='$active' href='category.php?cid=$cat_Id'>$cat_name</a></li>";
+                        ?>
+                    <?php
+                    }
+                    ?>
+                    <?php
+                    }
+                    ?>
                 </ul>
             </div>
         </div>
