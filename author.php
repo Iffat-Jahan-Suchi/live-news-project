@@ -5,7 +5,18 @@
             <div class="col-md-8">
                 <!-- post-container -->
                 <div class="post-container">
-                  <h2 class="page-heading">Author Name</h2>
+                    <?php
+                    if(isset($_GET['aid']))
+                    {
+                        $authorId=$_GET['aid'];
+                    }
+                    $authQuery="SELECT * FROM users WHERE users.user_id='{$authorId}'";
+                    $authRes=mysqli_query($con,$authQuery);
+                    $row=mysqli_fetch_assoc($authRes);
+
+
+                    ?>
+                  <h2 class="page-heading"><?php echo $row['username'] ?></h2>
                     <?php
                     $SI = 0;
                     $limit = 3;
@@ -20,7 +31,7 @@
                     }
                     $offset = ($page_number - 1) * $limit;
                     require 'admin/config.php';
-                    $query = "SELECT post.post_id,post.description, post.title,post.post_img,post.category,categories.category_name,post.post_date,users.username FROM post LEFT JOIN categories ON post.category=categories.category_id LEFT JOIN users ON post.author=users.user_id WHERE users.user_id='{$authorId}' ORDER BY post.post_id DESC LIMIT {$offset},{$limit}";
+                    $query = "SELECT post.post_id,post.description,post.author,post.title,post.post_img,post.category,categories.category_name,post.post_date,users.username FROM post LEFT JOIN categories ON post.category=categories.category_id LEFT JOIN users ON post.author=users.user_id WHERE post.author='{$authorId}' ORDER BY post.post_id DESC LIMIT {$offset},{$limit}";
                     $result = mysqli_query($con, $query);
                     $count = mysqli_num_rows($result);
                     $SiCount = 0;
@@ -28,6 +39,7 @@
                     {
                         while ($row = mysqli_fetch_assoc($result)) {
                             $id = $row['post_id'];
+                            $auth_id=$row['author'];
                             $title = $row['title'];
                             $category = $row['category_name'];
                             $categoryID = $row['category'];
@@ -52,7 +64,7 @@
                                         </span>
                                                 <span>
                                             <i class="fa fa-user" aria-hidden="true"></i>
-                                            <a href='author.php'><?php echo $author?></a>
+                                            <a href='author.php?aid=<?php echo $authorId ?>'><?php echo $author?></a>
                                         </span>
                                                 <span>
                                             <i class="fa fa-calendar" aria-hidden="true"></i>
@@ -76,7 +88,7 @@
                     }
 
 
-                    $query2 = "SELECT * FROM post";
+                    $query2 = "SELECT * FROM post WHERE post.author='{$authorId}'";
                     $result2 = mysqli_query($con,$query2) or dir("Failed.");
                     if(mysqli_num_rows($result2)){
                         $total_records = mysqli_num_rows($result2);
@@ -98,7 +110,7 @@
                             echo '<li class='.$active.'><a href="index.php?page='.$i.'">'.$i.'</a></li>';
                         }
                         if($total_page > $page_number){
-                            echo '<li><a href="index.php?page='.($page_number+1).'">next</a></li>';
+                            echo '<li><a href="index.php?aid='.$authorId.'&page='.($page_number+1).'">next</a></li>';
                         }
                         echo "</ul>";
                     }

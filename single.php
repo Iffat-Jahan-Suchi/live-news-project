@@ -5,9 +5,12 @@
                 <div class="col-md-8">
 
                     <?php
-                    $postId=$_GET['id'];
+                  if(isset($_GET['id']))
+                  {
+                      $postId=$_GET['id'];
+                  }
                     require 'admin/config.php';
-                    $query = "SELECT post.post_id,post.description, post.title,post.post_img,post.category,categories.category_name,post.post_date,users.username FROM post LEFT JOIN categories ON post.category=categories.category_id LEFT JOIN users ON post.author=users.user_id WHERE post.post_id='{$postId}'";
+                    $query = "SELECT post.post_id,post.description,post.author,post.title,post.post_img,post.category,categories.category_name,post.post_date,users.username FROM post LEFT JOIN categories ON post.category=categories.category_id LEFT JOIN users ON post.author=users.user_id WHERE post.post_id='{$postId}'";
                     $result = mysqli_query($con, $query);
                     $count = mysqli_num_rows($result);
 

@@ -97,7 +97,7 @@
 
                         echo "<ul class='pagination admin-pagination'>";
                         if($page_number > 1){
-                            echo '<li><a href="category.php?page='.($page_number-1).'">prev</a></li>';
+                            echo '<li><a href="category.php?cid=.$catId.&page='.($page_number-1).'">prev</a></li>';
                         }
 
                         for($i = 1; $i <= $total_page; $i++){
@@ -111,7 +111,7 @@
                             echo '<li class='.$active.'><a href="category.php?page='.$i.'">'.$i.'</a></li>';
                         }
                         if($total_page > $page_number){
-                            echo '<li><a href="category.php?page='.($page_number+1).'">next</a></li>';
+                            echo '<li><a href="category.php?cid=.$catId.&page='.($page_number+1).'">next</a></li>';
                         }
                         echo "</ul>";
                     }
